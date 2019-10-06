@@ -8,11 +8,11 @@ def print_ports(port, state):
 
 # syn scan
 def tcp_scan(host, ports):
-	print("tcp scan, %s with ports %s" % (target, ports))
+	print("tcp scan, %s with ports %s" % (host, ports))
 	sport = RandShort()
-    traceroute(host)
+	traceroute(host)
 	for port in ports:
-		pkt = sr1(IP(dst=target)/TCP(sport=sport, dport=port, flags="S"), timeout=1, verbose=0)
+		pkt = sr1(IP(dst=host)/TCP(sport=sport, dport=port, flags="S"), timeout=1, verbose=0)
 		if pkt != None:
 			if pkt.haslayer(TCP):
 				if pkt[TCP].flags == 20:
@@ -32,10 +32,10 @@ def tcp_scan(host, ports):
 
 # udp scan
 def udp_scan(host, ports):
-	print("udp scan, %s with ports %s" % (target, ports))
-    traceroute(target)
+	print("udp scan, %s with ports %s" % (host, ports))
+	traceroute(host)
 	for port in ports:
-		pkt = sr1(IP(dst=target)/UDP(sport=port, dport=port), timeout=2, verbose=0)
+		pkt = sr1(IP(dst=host)/UDP(sport=port, dport=port), timeout=2, verbose=0)
 		if pkt == None:
 			print_ports(port, "Open / filtered")
 		else:
@@ -49,7 +49,7 @@ def udp_scan(host, ports):
 
 # parse arguments
 parser = argparse.ArgumentParser("Port scanner using Scapy")
-parser.add_argument("-h", "--host", help="Specify target IP", required=True)
+parser.add_argument("-t", "--host", help="Specify target IP", required=True)
 parser.add_argument("-p", "--ports", type=int, help="Specify port")
 parser.add_argument("-mx", "--maxport", type=int, help="Specify min port")
 parser.add_argument("-mn", "--minport", type=int, help="Specify max port")
