@@ -1,4 +1,4 @@
-# port scanner
+# TCP and UDP port scanner
 import argparse, sys
 from scapy.all import *
 
@@ -6,17 +6,18 @@ from scapy.all import *
 def print_ports(port, state):
 	print("%s | %s" % (port, state))
 
-# tcp scan
-def tcp_scan(target, ports):
-	print("tcp scan on, %s with ports %s" % (target, ports))
+# syn scan
+def tcp_scan(host, ports):
+	print("tcp scan, %s with ports %s" % (target, ports))
 	sport = RandShort()
-  traceroute(target)
+    traceroute(host)
 	for port in ports:
 		pkt = sr1(IP(dst=target)/TCP(sport=sport, dport=port, flags="S"), timeout=1, verbose=0)
 		if pkt != None:
 			if pkt.haslayer(TCP):
 				if pkt[TCP].flags == 20:
-					print_ports(port, "Closed")                    
+					print_ports(port, "Closed")
+                    
 				elif pkt[TCP].flags == 18:
 					print_ports(port, "Open")
 				else:
@@ -30,8 +31,8 @@ def tcp_scan(target, ports):
 			print_ports(port, "Unanswered")
 
 # udp scan
-def udp_scan(target, ports):
-	print("udp scan on, %s with ports %s" % (target, ports))
+def udp_scan(host, ports):
+	print("udp scan, %s with ports %s" % (target, ports))
     traceroute(target)
 	for port in ports:
 		pkt = sr1(IP(dst=target)/UDP(sport=port, dport=port), timeout=2, verbose=0)
@@ -46,17 +47,17 @@ def udp_scan(target, ports):
 				print_ports(port, "Unknown")
 				print(pkt.summary())
 
-# argument setup
+# parse arguments
 parser = argparse.ArgumentParser("Port scanner using Scapy")
-parser.add_argument("-t", "--target", help="Specify target IP", required=True)
+parser.add_argument("-h", "--host", help="Specify target IP", required=True)
 parser.add_argument("-p", "--ports", type=int, help="Specify port")
 parser.add_argument("-mx", "--maxport", type=int, help="Specify min port")
 parser.add_argument("-mn", "--minport", type=int, help="Specify max port")
 parser.add_argument("-s", "--scantype", help="Scan type, tcp/udp", required=True)
 args = parser.parse_args()
 
-# arg parsing
-target = args.target
+# defiine arguments
+host = args.host
 scantype = args.scantype.lower()
 # set ports if passed
 if args.ports:
@@ -67,10 +68,10 @@ else:
 	# default port range
 	ports = range(1, 1024)
 
-# scan types
+# run scan
 if scantype == "tcp" or scantype == "t":
-	tcp_scan(target, ports)
+	tcp_scan(host, ports)
 elif scantype == "udp" or scantype == "u":
-	udp_scan(target, ports)
+	udp_scan(host, ports)
 else:
 	print("Scan type not supported")
