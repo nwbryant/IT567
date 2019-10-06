@@ -3,7 +3,7 @@ IT567 Projects
 ## Portscan Project
 **How to use**
 
-Run `python portscan.py -t "*ip address of target*" -s "*identify tcp or udp*" -m "which port"`
+Run `python portscan.py -t "*ip address of target host*" -s "*identify tcp or udp*" -m "which port"`
 
 Alternatively you could uise -mn "*port*" -mx "*port*" to specify a range of ports. Also if no port is specified it defaults to port 1-1024.
 
@@ -13,3 +13,4 @@ Alternatively you could uise -mn "*port*" -mx "*port*" to specify a range of por
 4. Traceroute
 5. Use of more than one protocol (I used TCP and UDP)
 
+Use `python portscan.py --help` for more info
